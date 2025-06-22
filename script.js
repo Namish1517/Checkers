@@ -2,20 +2,20 @@ const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
 
 let board = [];
-let currentPlayer = 'r';
-let selected = null;
-let legalMoves = [];
-let continuingCapture = false; 
+let currentPlayer ='r';
+let selected =null;
+let legalMoves =[];
+let continuingCapture =false; 
 
 function initBoard() {
-  board = Array.from({ length: 8 }, () => Array(8).fill(null));
+  board = Array.from({length:8},()=>Array(8).fill(null));
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 8; c++) {
       if ((r + c) % 2 === 1) board[r][c] = 'b';
     }
   }
-  for (let r = 5; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
+  for (let r = 5;r<8; r++) {
+    for (let c = 0;c<8; c++) {
       if ((r + c) % 2 === 1) board[r][c] = 'r';
     }
   }
@@ -26,18 +26,18 @@ function renderBoard() {
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const sq = document.createElement('div');
-      sq.classList.add('square', ((r + c) % 2 === 1 ? 'dark' : 'light'));
+      sq.classList.add('square', ((r+c) % 2 === 1 ? 'dark' : 'light'));
       sq.dataset.row = r;
       sq.dataset.col = c;
 
-      if (legalMoves.some(m => m.toRow === r && m.toCol === c)) {
+      if (legalMoves.some(m=>m.toRow === r && m.toCol === c)) {
         sq.classList.add('highlight');
       }
 
       const p = board[r][c];
       if (p) {
-        const pieceEl = document.createElement('div');
-        pieceEl.classList.add('piece', p.toLowerCase() === 'r' ? 'red' : 'black');
+        const pieceEl=document.createElement('div');
+        pieceEl.classList.add('piece', p.toLowerCase() === 'r' ? 'red':'black');
         if (p === 'R' || p === 'B') pieceEl.classList.add('king');
         if (selected && selected.row == r && selected.col == c) {
           pieceEl.classList.add('selected');
@@ -45,48 +45,48 @@ function renderBoard() {
         sq.appendChild(pieceEl);
       }
 
-      sq.addEventListener('click', onSquareClick);
+      sq.addEventListener('click',onSquareClick);
       boardEl.appendChild(sq);
     }
   }
-  statusEl.textContent = currentPlayer === 'r' ? "White's turn" : "Black's turn";
+  statusEl.textContent = currentPlayer==='r'?"White's turn" : "Black's turn";
 }
 
 function onSquareClick(e) {
-  const r = +e.currentTarget.dataset.row;
-  const c = +e.currentTarget.dataset.col;
-  const p = board[r][c];
+  const r=+e.currentTarget.dataset.row;
+  const c=+e.currentTarget.dataset.col;
+  const p =board[r][c];
 
   if (continuingCapture) {
   
-    const move = legalMoves.find(m => m.toRow === r && m.toCol === c);
+    const move=legalMoves.find(m => m.toRow === r && m.toCol === c);
     if (move) {
       makeMove(move);
     }
     return;
   }
 
-  if (p && p.toLowerCase() === currentPlayer) {
-    selected = { row: r, col: c };
-    legalMoves = computeLegalMoves(r, c, p);
+  if (p && p.toLowerCase()===currentPlayer){
+    selected={row:r,col:c};
+    legalMoves= computeLegalMoves(r,c,p);
     renderBoard();
-  } else if (selected) {
-    const move = legalMoves.find(m => m.toRow === r && m.toCol === c);
+  } else if (selected){
+    const move =legalMoves.find(m => m.toRow === r && m.toCol === c);
     if (move) makeMove(move);
   }
 }
 
 function computeLegalMoves(r, c, piece) {
-  const dirs = [];
-  const isKing = piece === 'R' || piece === 'B';
-  if (piece.toLowerCase() === 'r' || isKing) dirs.push([-1, -1], [-1, 1]);
-  if (piece.toLowerCase() === 'b' || isKing) dirs.push([1, -1], [1, 1]);
+  const dirs =[];
+  const isKing= piece==='R'||piece === 'B';
+  if (piece.toLowerCase()==='r'||isKing) dirs.push([-1, -1], [-1, 1]);
+  if (piece.toLowerCase()==='b'|| isKing) dirs.push([1, -1], [1, 1]);
 
-  const moves = [];
-  for (let [dr, dc] of dirs) {
-    const nr = r + dr, nc = c + dc;
-    if (inBounds(nr, nc) && board[nr][nc] === null) {
-      moves.push({ toRow: nr, toCol: nc, captures: [] });
+  const moves=[];
+  for (let [dr,dc] of dirs){
+    const nr=r+dr,nc=c+dc;
+    if (inBounds(nr,nc) && board[nr][nc] ===null){
+      moves.push({toRow: nr, toCol: nc, captures: [] });
     }
     const jr = r + 2*dr, jc = c + 2*dc;
     if (inBounds(jr, jc) && board[nr]?.[nc] &&
@@ -128,8 +128,6 @@ function makeMove(move) {
       return;
     }
   }
-
-
   continuingCapture = false;
   selected = null;
   legalMoves = [];
@@ -144,7 +142,7 @@ function makeMove(move) {
   }
   if (!redExists || !blackExists) {
   statusEl.textContent = redExists ? "White Wins!" : "Black Wins!";
-  boardEl.style.pointerEvents = 'none'; // disable further clicks
+  boardEl.style.pointerEvents = 'none'; 
   return;s
   }
 
