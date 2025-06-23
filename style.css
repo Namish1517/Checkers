@@ -78,3 +78,20 @@ button {
  top: 0%;
  right: 0%;
 }
+@media (max-width: 600px) {
+  #board {
+    grid-template-columns: repeat(8, 40px);
+    grid-template-rows: repeat(8, 40px);
+  }
+
+  .square {
+    width: 40px;
+    height: 40px;
+  }
+
+  .piece {
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+  }
+}
